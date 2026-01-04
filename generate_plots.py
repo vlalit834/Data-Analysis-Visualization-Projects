@@ -1,42 +1,63 @@
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend for headless environments
 import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set_theme(style="whitegrid")
+
+def load_data():
+    df = sns.load_dataset("penguins")
+    df = df.dropna()
+    print("Dataset loaded and cleaned successfully!\n")
+    print("Sample Data (first 5 rows):")
+    cols = ["species", "bill_length_mm", "bill_depth_mm", "body_mass_g"]
+    print(df[cols].head().to_string())
+    return df
 
 
-def load_sales_data():
-    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-              "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    sales = [12000, 15000, 17000, 16000, 18000, 20000,
-             22000, 21000, 19000, 23000, 25000, 27000]
-    return months, sales
+def plot_bill_comparison(df):
+    plt.figure(figsize=(8, 6))
+    sns.scatterplot(data=df, x="bill_length_mm", y="bill_depth_mm", hue="species", palette="deep", s=100)
+    plt.title("Bill Length vs. Bill Depth by Penguin Species")
+    plt.xlabel("Bill Length (mm)")
+    plt.ylabel("Bill Depth (mm)")
+    plt.savefig("bill_comparison.png")
+    print("Scatter plot saved as: bill_comparison.png")
 
 
-def plot_sales_trend(months, sales):
-    plt.figure(figsize=(10, 6))
-    plt.plot(months, sales, color='b', marker='o', linestyle='-', linewidth=2, label='Monthly Sales')
-    plt.title('Monthly Sales Trend (2025)')
-    plt.xlabel('Month')
-    plt.ylabel('Sales Amount ($)')
-    plt.grid(True)
-    plt.legend()
-    plt.savefig('sales_trend.png')
+def plot_body_mass_distribution(df):
+    plt.figure(figsize=(8, 6))
+    ax = sns.boxplot(data=df, x="species", y="body_mass_g", hue="species", palette="Set2")
+    if ax.get_legend():
+        ax.get_legend().remove()
+    plt.title("Body Mass Distribution by Penguin Species")
+    plt.ylabel("Body Mass (g)")
+    plt.savefig("body_mass_distribution.png")
+    print("Box plot saved as: body_mass_distribution.png")
 
 
-def plot_sales_bar_chart(months, sales):
-    plt.figure(figsize=(10, 6))
-    plt.bar(months, sales, color='orange', label='Monthly Sales')
-    plt.title('Monthly Sales Comparison')
-    plt.xlabel('Month')
-    plt.ylabel('Sales Amount ($)')
-    plt.grid(True, axis='y')
-    plt.legend()
-    plt.savefig('sales_bar_chart.png')
+def embed_images_in_md():
+    try:
+        md_path = "ques4.md"
+        with open(md_path, "r", encoding="utf-8") as f:
+            text = f.read()
+        changed = False
+        if "![](bill_comparison.png)" not in text:
+            text += "\n\n![](bill_comparison.png)\n"
+            changed = True
+        if "![](body_mass_distribution.png)" not in text:
+            text += "\n\n![](body_mass_distribution.png)\n"
+            changed = True
+        if changed:
+            with open(md_path, "w", encoding="utf-8") as f:
+                f.write(text)
+    except Exception:
+        pass
 
 
 if __name__ == '__main__':
-    print('Monthly Sales Visualization Project\n')
-    months, sales = load_sales_data()
-    plot_sales_trend(months, sales)
-    print('Chart saved: sales_trend.png')
-    plot_sales_bar_chart(months, sales)
-    print('Chart saved: sales_bar_chart.png')
+    print('Penguin Species Explorer Project\n')
+    df = load_data()
+    plot_bill_comparison(df)
+    plot_body_mass_distribution(df)
+    embed_images_in_md()
