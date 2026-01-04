@@ -1,4 +1,4 @@
-# Data-Analysis-Visualization-Projects — Reorganized
+# Data-Analysis-Visualization-Projects 
 
 This repository contains a set of small data analysis and visualization projects. The codebase has been reorganized into a professional structure under the `ques/` directory.
 
