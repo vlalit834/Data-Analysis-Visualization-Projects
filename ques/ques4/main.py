@@ -1,74 +1,112 @@
-import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend for headless environments
-import os
-import matplotlib.pyplot as plt
 import seaborn as sns
 
+import matplotlib
+matplotlib.use("Agg")  # headless mode (no GUI)
+
+import matplotlib.pyplot as plt
+
+# TODO: 1. Set the theme to "whitegrid" for better styling
 sns.set_theme(style="whitegrid")
 
-# Base directory for this script; ensure plots dir exists
-BASE_DIR = os.path.dirname(__file__)
-PLOTS_DIR = os.path.join(BASE_DIR, "plots")
-os.makedirs(PLOTS_DIR, exist_ok=True)
-
-
+# 1. Load Penguin Dataset
 def load_data():
-    df = sns.load_dataset("penguins")
-    df = df.dropna()
-    print("Dataset loaded and cleaned successfully!\n")
-    print("Sample Data (first 5 rows):")
-    cols = ["species", "bill_length_mm", "bill_depth_mm", "body_mass_g"]
-    print(df[cols].head().to_string())
+    """
+    Load the penguins dataset using seaborn and clean it.
+    """
+    # TODO: 2. Load the "penguins" dataset
+    df = sns.load_dataset("penguins") 
+    
+    # TODO: 3. Drop rows with missing values, this prevents errors during plotting
+    df=df.dropna()
+    
+    print("Dataset loaded and cleaned successfully!")
+    
+    if df is not None:
+        print("\nSample Data (first 5 rows):")
+
+        # display only relevant columns (species, bill_length_mm, bill_depth_mm, body_mass_g)
+        print(df[["species","bill_length_mm","bill_depth_mm","body_mass_g"]].head())
+
+    
     return df
 
 
+# 2. Scatter Plot: Bill Length vs Bill Depth
 def plot_bill_comparison(df):
-    plt.figure(figsize=(8, 6))
-    sns.scatterplot(data=df, x="bill_length_mm", y="bill_depth_mm", hue="species", palette="deep", s=100)
-    plt.title("Bill Length vs. Bill Depth by Penguin Species")
+    """
+    Create a scatter plot comparing bill length and bill depth by species.
+    """
+    # TODO: 4. Set the figure size to (8, 6)
+    plt.figure(figsize=(8,6))
+    
+    # TODO: 5. Create a scatterplot
+    # Arguments: data=df, x="bill_length_mm", y="bill_depth_mm", hue="species"
+    # Styling: palette="deep", s=100
+    sns.scatterplot(
+        data=df, 
+        x="bill_length_mm", 
+        y="bill_depth_mm", 
+        hue="species",
+        palette="deep", 
+        s=100
+    )
+
+    # TODO: 6. Add Title and Axis Labels
+    # Title: "Bill Length vs Bill Depth by Penguin Species"
+    # X-label: "Bill Length (mm)", Y-label: "Bill Depth (mm)"
+    plt.title("Bill Length vs Bill Depth by Penguin Species")
     plt.xlabel("Bill Length (mm)")
     plt.ylabel("Bill Depth (mm)")
-    out_path = os.path.join(PLOTS_DIR, "bill_comparison.png")
-    plt.savefig(out_path)
-    print(f"Scatter plot saved as: {out_path}")
+    
+    # TODO: 7. Save the plot as "bill_comparison.png"
+    filename = "bill_comparison.png"
+    plt.savefig(filename)
+    
+    print(f"Scatter plot saved as: {filename}")
 
 
+# 3. Box Plot: Body Mass Distribution
 def plot_body_mass_distribution(df):
-    plt.figure(figsize=(8, 6))
-    ax = sns.boxplot(data=df, x="species", y="body_mass_g", hue="species", palette="Set2")
-    if ax.get_legend():
-        ax.get_legend().remove()
+    """
+    Create a box plot showing body mass distribution across species.
+    """
+    # TODO: 8. Set the figure size to (8, 6)
+    plt.figure(figsize=(8,6))
+    
+    # TODO: 9. Create a boxplot
+    # Arguments: data=df, x="species", y="body_mass_g", hue="species"
+    # Styling: palette="Set2", legend=False
+    sns.boxplot(
+        data=df, 
+        x="species", 
+        y="body_mass_g", 
+        hue="species",
+        palette="Set2", 
+        legend=False
+    )
+
+    # TODO: 10. Add Title and Axis Labels
+    # Title: "Body Mass Distribution by Penguin Species"
+    # X-label: "Species", Y-label: "Body Mass (g)"
     plt.title("Body Mass Distribution by Penguin Species")
+    plt.xlabel("Species")
     plt.ylabel("Body Mass (g)")
-    out_path = os.path.join(PLOTS_DIR, "body_mass_distribution.png")
-    plt.savefig(out_path)
-    print(f"Box plot saved as: {out_path}")
+
+    # TODO: 11. Save the plot as "body_mass_distribution.png"
+    filename = "body_mass_distribution.png"
+    plt.savefig(filename)
+    
+    print(f"Box plot saved as: {filename}")
 
 
-def embed_images_in_md():
-    try:
-        md_path = os.path.join(BASE_DIR, "ques4.md")
-        with open(md_path, "r", encoding="utf-8") as f:
-            text = f.read()
-        changed = False
-        link1 = "![](plots/bill_comparison.png)"
-        link2 = "![](plots/body_mass_distribution.png)"
-        if link1 not in text:
-            text += "\n\n" + link1 + "\n"
-            changed = True
-        if link2 not in text:
-            text += "\n\n" + link2 + "\n"
-            changed = True
-        if changed:
-            with open(md_path, "w", encoding="utf-8") as f:
-                f.write(text)
-    except Exception:
-        pass
+if __name__ == "__main__":
+    print("Penguin Species Explorer Project\n")
 
-
-if __name__ == '__main__':
-    print('Penguin Species Explorer Project\n')
+    # Load Data
     df = load_data()
+
+    # Generate Plots
     plot_bill_comparison(df)
     plot_body_mass_distribution(df)
-    embed_images_in_md()
+
+
