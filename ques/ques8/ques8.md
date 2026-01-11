@@ -102,11 +102,6 @@ Chart saved: scatter_plot.png
 Chart saved: bar_chart.png
 ```
 
-**Generated Files:**
-
-- `scatter_plot.png`
-- `bar_chart.png`
-
 ---
 
 Good luck and have fun building the dashboard! 🎉
